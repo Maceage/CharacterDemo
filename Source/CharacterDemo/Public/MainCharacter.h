@@ -3,20 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "InputActionValue.h"
+#include "BaseCharacter.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()
-class CHARACTERDEMO_API AMainCharacter : public ACharacter
+class CHARACTERDEMO_API AMainCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    class UInputMappingContext* DefaultMappingContext;
-    
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    class UInputAction* MoveAction;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FollowCamera;
 
 public:
 	// Sets default values for this character's properties
@@ -32,7 +31,4 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
-	/** Called for movement input **/
-	void Move(const FInputActionValue& Value);
 };
