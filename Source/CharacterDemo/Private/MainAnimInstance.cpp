@@ -3,6 +3,7 @@
 
 #include "MainAnimInstance.h"
 
+#include "KismetAnimationLibrary.h"
 #include "GameFramework/PawnMovementComponent.h"
 
 void UMainAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -30,5 +31,7 @@ void UMainAnimInstance::UpdateAnimationProperties()
 		MovementSpeed = LateralSpeed.Size();
 		
 		bIsInAir = OwningPawn->GetMovementComponent()->IsFalling();
+		
+		Direction = UKismetAnimationLibrary::CalculateDirection(Speed, OwningPawn->GetActorRotation());
 	}
 }
