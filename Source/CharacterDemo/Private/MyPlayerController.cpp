@@ -33,8 +33,14 @@ void AMyPlayerController::Move(const FInputActionValue& Value)
 
 	if (APawn* ControlledPawn = GetPawn())
 	{
-		ControlledPawn->AddMovementInput(ControlledPawn->GetActorForwardVector(), MovementVector.Y);
-		ControlledPawn->AddMovementInput(ControlledPawn->GetActorRightVector(), MovementVector.X);
+		const FRotator Rotation = GetControlRotation();
+		const FRotator CameraRotation(0, Rotation.Yaw, 0);
+		
+		const FVector ForwardDirection = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
+		ControlledPawn->AddMovementInput(ForwardDirection, MovementVector.Y);
+		
+		const FVector RightDirection = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
+		ControlledPawn->AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
 
