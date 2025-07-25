@@ -3,6 +3,8 @@
 
 #include "MainAnimInstance.h"
 
+#include "GameFramework/PawnMovementComponent.h"
+
 void UMainAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
@@ -26,5 +28,7 @@ void UMainAnimInstance::UpdateAnimationProperties()
 		FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0);
 
 		MovementSpeed = LateralSpeed.Size();
+		
+		bIsInAir = OwningPawn->GetMovementComponent()->IsFalling();
 	}
 }

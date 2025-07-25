@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/Character.h"
 
 void AMyPlayerController::SetupInputComponent()
 {
@@ -14,6 +15,8 @@ void AMyPlayerController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPlayerController::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyPlayerController::Look);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AMyPlayerController::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMyPlayerController::StopJumping);
 	}
 }
 
@@ -50,4 +53,20 @@ void AMyPlayerController::Look(const FInputActionValue& Value)
 
 	AddYawInput(LookAxisVector.X);
 	AddPitchInput(LookAxisVector.Y);
+}
+
+void AMyPlayerController::Jump()
+{
+	if (ACharacter* ControlledCharacter = GetCharacter())
+	{
+		ControlledCharacter->Jump();
+	}
+}
+
+void AMyPlayerController::StopJumping()
+{
+	if (ACharacter* ControlledCharacter = GetCharacter())
+	{
+		ControlledCharacter->StopJumping();
+	}
 }

@@ -24,5 +24,8 @@ public:
 	float MovementSpeed;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
+	bool bIsInAir;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	class APawn* OwningPawn;
 };
