@@ -6,6 +6,22 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
+void AMyPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+
+	if (ACharacter* ControlledCharacter = GetCharacter())
+	{
+		ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	}
+}
 
 void AMyPlayerController::SetupInputComponent()
 {
@@ -15,18 +31,12 @@ void AMyPlayerController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPlayerController::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyPlayerController::Look);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AMyPlayerController::Jump);
+		
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMyPlayerController::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMyPlayerController::StopJumping);
-	}
-}
 
-void AMyPlayerController::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMyPlayerController::StartSprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMyPlayerController::StopSprint);
 	}
 }
 
@@ -68,5 +78,21 @@ void AMyPlayerController::StopJumping()
 	if (ACharacter* ControlledCharacter = GetCharacter())
 	{
 		ControlledCharacter->StopJumping();
+	}
+}
+
+void AMyPlayerController::StartSprint()
+{
+	if (ACharacter* ControlledCharacter = GetCharacter())
+	{
+		ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+	}
+}
+
+void AMyPlayerController::StopSprint()
+{
+	if (ACharacter* ControlledCharacter = GetCharacter())
+	{
+		ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 }
