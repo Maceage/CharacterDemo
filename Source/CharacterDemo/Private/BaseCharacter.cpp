@@ -32,3 +32,43 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+void ABaseCharacter::Attack()
+{
+	// Alternative method
+	// UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	//
+	// if (AnimInstance && AttackMontage)
+	// {
+	// 	if (!AnimInstance->Montage_IsPlaying(AttackMontage))
+	// 	{
+	// 		AnimInstance->Montage_Play(AttackMontage, 1.0f);
+	// 	}
+	// }
+	// else
+	// {
+	// 	//...
+	// }
+	
+	if (AttackMontage)
+	{
+		if (GetCurrentMontage() == nullptr)
+		{
+			PlayAnimMontage(AttackMontage);
+		}
+		else
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Red, TEXT("MyBaseCharacter: AttackMontage already playing"));
+			}
+		}
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Red, TEXT("MyBaseCharacter: Cannot play AttackMontage"));
+		}
+	}
+}
+

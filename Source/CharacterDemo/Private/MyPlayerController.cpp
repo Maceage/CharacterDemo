@@ -3,6 +3,7 @@
 
 #include "MyPlayerController.h"
 
+#include "BaseCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
@@ -39,6 +40,8 @@ void AMyPlayerController::SetupInputComponent()
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMyPlayerController::StartSprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMyPlayerController::StopSprint);
+
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMyPlayerController::Attack);
 	}
 }
 
@@ -106,5 +109,13 @@ void AMyPlayerController::StopSprint()
 	if (ACharacter* ControlledCharacter = GetCharacter())
 	{
 		ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	}
+}
+
+void AMyPlayerController::Attack()
+{
+	if (ABaseCharacter* ControlledCharacter = CastChecked<ABaseCharacter>(GetCharacter()))
+	{
+		ControlledCharacter->Attack();
 	}
 }
