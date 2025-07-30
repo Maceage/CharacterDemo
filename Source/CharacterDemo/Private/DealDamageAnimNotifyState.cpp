@@ -3,6 +3,7 @@
 
 #include "DealDamageAnimNotifyState.h"
 
+#include "BaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -10,6 +11,11 @@ void UDealDamageAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, U
 	float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 4.5f, FColor::Yellow, TEXT("DealDamageAnimNotifyState: NotifyBegin"));
+
+	if (ABaseCharacter* Character = Cast<ABaseCharacter>(MeshComp->GetOwner()))
+	{
+		Character->ActivateAttack(true);
+	}
 }
 
 void UDealDamageAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -28,25 +34,30 @@ void UDealDamageAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UA
 
 	TArray<FHitResult> HitArray;
 
-	const bool Hit = UKismetSystemLibrary::SphereTraceMulti(MeshComp, StartTraceLocation, EndTraceLocation, Radius,
-		UEngineTypes::ConvertToTraceType(ECC_Camera), bComplexTrace, ActorsToIgnore, EDrawDebugTrace::ForDuration,
-		HitArray, bIgnoreSelf, TraceColor, TraceHitColor, DrawTime);
-
-	if (Hit)
-	{
-		for (const FHitResult HitResult : HitArray)
-		{
-			UGameplayStatics::ApplyDamage(HitResult.GetActor(),
-				20,													// Damage
-				Cast<APawn>(MeshComp->GetOwner())->GetController(),	// Instigator
-				MeshComp->GetOwner(),								// Damage Causer (Actor)
-				UDamageType::StaticClass());						// Default damage type
-		}
-	}
+	// const bool Hit = UKismetSystemLibrary::SphereTraceMulti(MeshComp, StartTraceLocation, EndTraceLocation, Radius,
+	// 	UEngineTypes::ConvertToTraceType(ECC_Camera), bComplexTrace, ActorsToIgnore, EDrawDebugTrace::ForDuration,
+	// 	HitArray, bIgnoreSelf, TraceColor, TraceHitColor, DrawTime);
+	//
+	// if (Hit)
+	// {
+	// 	for (const FHitResult HitResult : HitArray)
+	// 	{
+	// 		UGameplayStatics::ApplyDamage(HitResult.GetActor(),
+	// 			20,													// Damage
+	// 			Cast<APawn>(MeshComp->GetOwner())->GetController(),	// Instigator
+	// 			MeshComp->GetOwner(),								// Damage Causer (Actor)
+	// 			UDamageType::StaticClass());						// Default damage type
+	// 	}
+	// }
 }
 
 void UDealDamageAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
 	const FAnimNotifyEventReference& EventReference)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 4.5f, FColor::Yellow, TEXT("DealDamageAnimNotifyState: NotifyEnd"));
+
+	if (ABaseCharacter* Character = Cast<ABaseCharacter>(MeshComp->GetOwner()))
+	{
+		Character->ActivateAttack(false);
+	}
 }

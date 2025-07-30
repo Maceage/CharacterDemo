@@ -3,33 +3,42 @@
 
 #include "BaseCharacter.h"
 
+#include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	AttackCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AttackCapsule"));
+	AttackCapsule->InitCapsuleSize(10.f, 30.f);
+	AttackCapsule->CanCharacterStepUpOn = ECB_No;
+	AttackCapsule->SetGenerateOverlapEvents(true);
+	AttackCapsule->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	AttackCapsule->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("LeftHandSocket"));
+	AttackCapsule->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter::OnOverlapBegin_AttackCapsule);
+
+	AttackCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ABaseCharacter::Attack()
@@ -48,7 +57,7 @@ void ABaseCharacter::Attack()
 	// {
 	// 	//...
 	// }
-	
+
 	if (AttackMontage)
 	{
 		if (GetCurrentMontage() == nullptr)
@@ -59,7 +68,8 @@ void ABaseCharacter::Attack()
 		{
 			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Red, TEXT("MyBaseCharacter: AttackMontage already playing"));
+				GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Red,
+				                                 TEXT("MyBaseCharacter: AttackMontage already playing"));
 			}
 		}
 	}
@@ -72,3 +82,32 @@ void ABaseCharacter::Attack()
 	}
 }
 
+void ABaseCharacter::ActivateAttack(bool Activate)
+{
+	if (Activate)
+	{
+		AttackCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+	else
+	{
+		AttackCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+void ABaseCharacter::OnOverlapBegin_AttackCapsule(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor != this && OtherActor->IsA(ACharacter::StaticClass()))
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Hit Other Character"));
+		}
+	}
+
+	UGameplayStatics::ApplyDamage(OtherActor,	// Damaged Actor
+		25,										// Damage
+		Cast<APawn>(this)->GetController(),		// Instigator (Controller)
+		this,									// Damage Causer (Actor)
+		UDamageType::StaticClass());			// Default damage type
+}
