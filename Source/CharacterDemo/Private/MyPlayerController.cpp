@@ -43,6 +43,8 @@ void AMyPlayerController::SetupInputComponent()
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMyPlayerController::Attack);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyPlayerController::ToggleAim);
+		
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AMyPlayerController::ToggleCrouch);
 	}
 }
 
@@ -137,6 +139,23 @@ void AMyPlayerController::ToggleAim()
 		else
 		{
 			ControlledCharacter->Aim(true);
+		}
+	}
+}
+
+void AMyPlayerController::ToggleCrouch()
+{
+	if (ABaseCharacter* ControlledCharacter = CastChecked<ABaseCharacter>(GetCharacter()))
+	{
+		bool isCrouched = ControlledCharacter->IsCrouched();
+		
+		if (isCrouched)
+		{
+			ControlledCharacter->UnCrouch();
+		}
+		else
+		{
+			ControlledCharacter->Crouch();
 		}
 	}
 }

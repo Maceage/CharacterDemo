@@ -36,6 +36,7 @@ void UMainAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		Direction = UKismetAnimationLibrary::CalculateDirection(Speed, MainCharacter->GetActorRotation());
 
 		bIsAiming = MainCharacter->bIsAiming;
+		bIsCrouching = MainCharacter->IsCrouched();
 
 		FRotator PawnRotation = MainCharacter->GetActorRotation();
 		FRotator ControllerRotation = MainCharacter->GetControlRotation();

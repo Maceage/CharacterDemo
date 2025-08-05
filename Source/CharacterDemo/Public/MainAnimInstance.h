@@ -33,6 +33,9 @@ public:
 	bool bIsAiming;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	bool bIsCrouching;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	float AimPitch;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
