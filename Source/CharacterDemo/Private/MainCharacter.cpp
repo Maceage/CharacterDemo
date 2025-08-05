@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -38,6 +39,11 @@ void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	StartFOV = FollowCamera->FieldOfView;
+	DesiredFOV = StartFOV;
+
+	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->ViewPitchMin = -30;
+	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->ViewPitchMax = 30;
 }
 
 void AMainCharacter::OnConstruction(const FTransform& Transform)
@@ -51,11 +57,20 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	float FOV = FMath::Lerp(FollowCamera->FieldOfView, DesiredFOV, DeltaTime * 10.0f);
+	FollowCamera->SetFieldOfView(FOV);
 }
 
 // Called to bind functionality to input
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
 
+void AMainCharacter::Aim(bool aim)
+{
+	Super::Aim(aim);
+
+	bUseControllerRotationYaw = aim;
+	DesiredFOV = (aim ? AimFOV : StartFOV);
 }

@@ -21,7 +21,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	bool bIsAiming = false;
 
-	void Aim(bool aim);
+	virtual void Aim(bool aim);
 
 	bool IsAttacking();
 

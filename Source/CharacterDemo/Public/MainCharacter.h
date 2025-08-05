@@ -23,9 +23,17 @@ class CHARACTERDEMO_API AMainCharacter : public ABaseCharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* BackWeapon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	float AimFOV = 45;
+
+	float StartFOV;
+	float DesiredFOV;
+
 public:
 	// Sets default values for this character's properties
 	AMainCharacter();
+
+	virtual void Aim(bool aim) override;
 
 protected:
 	// Called when the game starts or when spawned
