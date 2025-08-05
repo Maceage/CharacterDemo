@@ -18,6 +18,13 @@ public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	bool bIsAiming = false;
+
+	void Aim(bool aim);
+
+	bool IsAttacking();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

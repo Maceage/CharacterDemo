@@ -42,6 +42,7 @@ void AMyPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMyPlayerController::StopSprint);
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMyPlayerController::Attack);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyPlayerController::ToggleAim);
 	}
 }
 
@@ -117,5 +118,25 @@ void AMyPlayerController::Attack()
 	if (ABaseCharacter* ControlledCharacter = CastChecked<ABaseCharacter>(GetCharacter()))
 	{
 		ControlledCharacter->Attack();
+	}
+}
+
+void AMyPlayerController::ToggleAim()
+{
+	if (ABaseCharacter* ControlledCharacter = CastChecked<ABaseCharacter>(GetCharacter()))
+	{
+		if (ControlledCharacter->IsAttacking())
+		{
+			return;
+		}
+
+		if (ControlledCharacter->bIsAiming)
+		{
+			ControlledCharacter->Aim(false);
+		}
+		else
+		{
+			ControlledCharacter->Aim(true);
+		}
 	}
 }

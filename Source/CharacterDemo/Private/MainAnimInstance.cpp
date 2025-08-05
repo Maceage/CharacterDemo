@@ -4,34 +4,45 @@
 #include "MainAnimInstance.h"
 
 #include "KismetAnimationLibrary.h"
+#include "MainCharacter.h"
 #include "GameFramework/PawnMovementComponent.h"
 
 void UMainAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	if (OwningPawn == nullptr)
+	if (MainCharacter == nullptr)
 	{
-		OwningPawn = TryGetPawnOwner();
+		MainCharacter = Cast<AMainCharacter>(TryGetPawnOwner());
 	}
 }
 
-void UMainAnimInstance::UpdateAnimationProperties()
+void UMainAnimInstance::UpdateAnimationProperties(float DeltaTime)
 {
-	if (OwningPawn == nullptr)
+	if (MainCharacter == nullptr)
 	{
-		OwningPawn = TryGetPawnOwner();
+		MainCharacter = Cast<AMainCharacter>(TryGetPawnOwner());
 	}
 
-	if (OwningPawn)
+	if (MainCharacter)
 	{
-		FVector Speed = OwningPawn->GetVelocity();
+		FVector Speed = MainCharacter->GetVelocity();
 		FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0);
 
 		MovementSpeed = LateralSpeed.Size();
 		
-		bIsInAir = OwningPawn->GetMovementComponent()->IsFalling();
+		bIsInAir = MainCharacter->GetMovementComponent()->IsFalling();
 		
-		Direction = UKismetAnimationLibrary::CalculateDirection(Speed, OwningPawn->GetActorRotation());
+		Direction = UKismetAnimationLibrary::CalculateDirection(Speed, MainCharacter->GetActorRotation());
+
+		bIsAiming = MainCharacter->bIsAiming;
+
+		FRotator PawnRotation = MainCharacter->GetActorRotation();
+		FRotator ControllerRotation = MainCharacter->GetControlRotation();
+		FRotator DeltaRotation = ControllerRotation - PawnRotation;
+
+		FRotator Interp = FMath::RInterpTo(FRotator(AimPitch, AimYaw, 0), DeltaRotation, DeltaTime, 15.0f);
+		AimPitch = FMath::ClampAngle(Interp.Pitch, -90, 90);
+		AimYaw = FMath::ClampAngle(Interp.Yaw, -90, 90);
 	}
 }

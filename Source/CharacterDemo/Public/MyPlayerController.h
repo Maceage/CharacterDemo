@@ -40,6 +40,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AttackAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* AimAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float WalkSpeed = 200;
 
@@ -58,4 +61,6 @@ private:
 	void StopSprint();
 
 	void Attack();
+
+	void ToggleAim();
 };

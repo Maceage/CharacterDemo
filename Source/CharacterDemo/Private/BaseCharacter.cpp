@@ -23,6 +23,23 @@ ABaseCharacter::ABaseCharacter()
 	AttackCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void ABaseCharacter::Aim(bool aim)
+{
+	bIsAiming = aim;
+}
+
+bool ABaseCharacter::IsAttacking()
+{
+	UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
+
+	if (AnimInstance && AttackMontage)
+	{
+		return AnimInstance->Montage_IsPlaying(AttackMontage);
+	}
+
+	return false;
+}
+
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
@@ -63,13 +80,14 @@ void ABaseCharacter::Attack()
 		if (GetCurrentMontage() == nullptr)
 		{
 			PlayAnimMontage(AttackMontage);
+
+			Aim(false);
 		}
 		else
 		{
 			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Red,
-				                                 TEXT("MyBaseCharacter: AttackMontage already playing"));
+				GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Red, TEXT("MyBaseCharacter: AttackMontage already playing"));
 			}
 		}
 	}

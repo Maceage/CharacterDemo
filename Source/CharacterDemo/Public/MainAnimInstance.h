@@ -18,7 +18,7 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	UFUNCTION(BlueprintCallable, Category = AnimationProperties)
-	void UpdateAnimationProperties();
+	void UpdateAnimationProperties(float DeltaTime);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	float MovementSpeed;
@@ -28,7 +28,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	bool bIsInAir;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	bool bIsAiming;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	float AimPitch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	float AimYaw;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
-	class APawn* OwningPawn;
+	class AMainCharacter* MainCharacter;
 };
