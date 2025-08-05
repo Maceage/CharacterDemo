@@ -34,6 +34,7 @@ public:
 	AMainCharacter();
 
 	virtual void Aim(bool aim) override;
+	virtual void Attack() override;
 
 protected:
 	// Called when the game starts or when spawned

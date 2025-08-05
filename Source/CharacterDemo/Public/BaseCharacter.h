@@ -39,7 +39,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animations)
 	class UAnimMontage* AttackMontage;
 
-	void Attack();
+	virtual void Attack();
 
 	void ActivateAttack(bool Activate);
 
