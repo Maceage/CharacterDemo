@@ -29,8 +29,8 @@ AMainCharacter::AMainCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
-	EquippedWeapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EquippedWeapon"));
-	BackWeapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackWeapon"));
+	EquippedWeapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightHandWeaponHoldSocket"));
+	BackWeapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackWeaponHoldSocket"));
 }
 
 // Called when the game starts or when spawned
@@ -42,7 +42,7 @@ void AMainCharacter::BeginPlay()
 
 void AMainCharacter::OnConstruction(const FTransform& Transform)
 {
-	EquippedWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("MeleeWeaponHoldSocket"));
+	EquippedWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandWeaponHoldSocket"));
 	BackWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("BackWeaponHoldSocket"));
 }
 
